@@ -1,4 +1,6 @@
-const jestConfig = {
+import type { Config } from 'jest';
+
+const jestConfig: Config = {
   moduleFileExtensions: ['js', 'json', 'ts'],
   rootDir: './',
   moduleNameMapper: {
@@ -7,8 +9,14 @@ const jestConfig = {
   },
   testRegex: '.*\\..*spec\\.ts$',
   transform: {
-    '^.+\\.(t|j)s$': 'ts-jest',
+    '^.+\\.ts$': [
+      'ts-jest',
+      {
+        useESM: true,
+      },
+    ],
   },
+  extensionsToTreatAsEsm: ['.ts'],
   collectCoverageFrom: ['**/*.(t|j)s'],
   coverageDirectory: 'coverage/',
   testEnvironment: 'node',

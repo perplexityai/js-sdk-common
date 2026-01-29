@@ -2,6 +2,7 @@
   "name": "@eppo/js-client-sdk-common",
   "version": "4.15.4",
   "description": "Common library for Eppo JavaScript SDKs (web, react native, and node)",
+  "type": "module",
   "main": "dist/index.js",
   "files": [
     "/dist",
@@ -12,12 +13,6 @@
   "engines": {
     "node": ">=18.x"
   },
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
-    }
-  },
   "scripts": {
     "lint": "eslint '**/*.{ts,tsx}' --cache",
     "lint:fix": "eslint --fix '**/*.{ts,tsx}' --cache",
@@ -26,11 +21,10 @@
     "pre-commit": "lint-staged && tsc",
     "typecheck": "tsc",
     "test": "pnpm test:unit",
-    "test:unit": "NODE_ENV=test jest '.*\\.spec\\.ts'",
-    "obfuscate-mock-ufc": "ts-node test/writeObfuscatedMockUFC",
-    "bootstrap-config": "ts-node src/tools/get-bootstrap-config"
+    "test:unit": "NODE_ENV=test NODE_OPTIONS='--experimental-vm-modules' jest '.*\\.spec\\.ts'",
+    "obfuscate-mock-ufc": "tsx test/writeObfuscatedMockUFC",
+    "bootstrap-config": "tsx src/tools/get-bootstrap-config"
   },
-  "jsdelivr": "dist/eppo-sdk.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Eppo-exp/js-client-sdk-common.git"
@@ -44,8 +38,10 @@
   "devDependencies": {
     "@types/jest": "^29.5.11",
     "@types/lodash": "^4.17.5",
+    "@types/node": "^20.0.0",
     "@types/semver": "^7.5.6",
     "@types/spark-md5": "^3.0.5",
+    "@types/yargs": "^17.0.0",
     "@typescript-eslint/eslint-plugin": "^5.13.0",
     "@typescript-eslint/parser": "^5.13.0",
     "eslint-config-prettier": "^10.0.1",
@@ -59,14 +55,10 @@
     "lodash": "^4.17.21",
     "prettier-eslint": "^16.3.0",
     "prettier": "^3.4.2",
-    "terser-webpack-plugin": "^5.3.3",
     "testdouble": "^3.20.1",
     "ts-jest": "^29.1.1",
-    "ts-loader": "^9.3.1",
-    "ts-node": "^10.9.1",
+    "tsx": "^4.7.0",
     "typescript": "^5.7.2",
-    "webpack-cli": "^6.0.1",
-    "webpack": "^5.73.0",
     "yargs": "^17.7.2"
   },
   "dependencies": {
