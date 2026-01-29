@@ -57,9 +57,9 @@ pushd "$2" > /dev/null
 TARGET_DIR="$(pwd)"
 rm -rf node_modules/.cache
 if [ "$(grep -c '"'"$PACKAGE_NAME"'"' ./package.json)" -gt 0 ]; then
-  yarn remove "${PACKAGE_NAME}"
+  pnpm remove "${PACKAGE_NAME}"
 fi
-yarn add "${PACKAGE_DIR}" --exact
+pnpm i "${PACKAGE_DIR}" --exact
 popd > /dev/null
 
 echo "$PACKAGE_DIR installed in $TARGET_DIR"

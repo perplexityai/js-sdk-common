@@ -1,5 +1,3 @@
-import { v4 as randomUUID } from 'uuid';
-
 import ApiEndpoints from '../api-endpoints';
 import { logger, loggerPrefix } from '../application-logger';
 import { IAssignmentEvent, IAssignmentLogger } from '../assignment-logger';
@@ -1149,7 +1147,7 @@ export default class EppoClient {
    */
   track(type: string, payload: Record<string, unknown>) {
     this.eventDispatcher.dispatch({
-      uuid: randomUUID(),
+      uuid: crypto.randomUUID(),
       type,
       timestamp: new Date().getTime(),
       payload,

@@ -1,4 +1,3 @@
-import * as base64 from 'js-base64';
 import { times } from 'lodash';
 import * as td from 'testdouble';
 
@@ -37,7 +36,7 @@ import EppoClient, {
 import { initConfiguration } from './test-utils';
 
 // Use a known salt to produce deterministic hashes
-const salt = base64.fromUint8Array(new Uint8Array([7, 53, 17, 78]));
+const salt = btoa(String.fromCharCode(...new Uint8Array([7, 53, 17, 78])));
 
 describe('EppoClient E2E test', () => {
   global.fetch = jest.fn(() => {
