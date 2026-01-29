@@ -1,4 +1,4 @@
-import * as SparkMD5 from 'spark-md5';
+import SparkMD5 from 'spark-md5';
 
 import { IObfuscatedPrecomputedBandit, IPrecomputedBandit, PrecomputedFlag } from './interfaces';
 import { Attributes, AttributeType, Base64String, MD5String } from './types';

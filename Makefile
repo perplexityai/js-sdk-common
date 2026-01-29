@@ -45,4 +45,3 @@ test-data:
 prepare: test-data
 	 rm -rf dist/
 	 pnpm tsc
-	 pnpm webpack
