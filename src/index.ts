@@ -1,32 +1,36 @@
 import ApiEndpoints from './api-endpoints';
 import { logger as applicationLogger, loggerPrefix } from './application-logger';
-import { IAssignmentHooks } from './assignment-hooks';
-import { IAssignmentLogger, IAssignmentEvent } from './assignment-logger';
-import { IBanditLogger, IBanditEvent } from './bandit-logger';
+import type { IAssignmentHooks } from './assignment-hooks';
+import type { IAssignmentLogger, IAssignmentEvent } from './assignment-logger';
+import type { IBanditLogger, IBanditEvent } from './bandit-logger';
 import {
   AbstractAssignmentCache,
+  assignmentCacheKeyToString,
+  assignmentCacheValueToString,
+} from './cache/abstract-assignment-cache';
+import type {
   AssignmentCache,
   AsyncMap,
   AssignmentCacheKey,
   AssignmentCacheValue,
   AssignmentCacheEntry,
-  assignmentCacheKeyToString,
-  assignmentCacheValueToString,
 } from './cache/abstract-assignment-cache';
 import { LRUInMemoryAssignmentCache } from './cache/lru-in-memory-assignment-cache';
 import { NonExpiringInMemoryAssignmentCache } from './cache/non-expiring-in-memory-cache-assignment';
-import EppoClient, {
+import EppoClient from './client/eppo-client';
+import type {
   EppoClientParameters,
   FlagConfigurationRequestParameters,
   IAssignmentDetails,
   IContainerExperiment,
 } from './client/eppo-client';
-import EppoPrecomputedClient, {
+import EppoPrecomputedClient from './client/eppo-precomputed-client';
+import type {
   PrecomputedFlagsRequestParameters,
   Subject,
 } from './client/eppo-precomputed-client';
 import FlagConfigRequestor from './configuration-requestor';
-import {
+import type {
   IConfigurationStore,
   IAsyncStore,
   ISyncStore,
@@ -34,7 +38,7 @@ import {
 import { HybridConfigurationStore } from './configuration-store/hybrid.store';
 import { MemoryStore, MemoryOnlyConfigurationStore } from './configuration-store/memory.store';
 import { ConfigurationWireHelper } from './configuration-wire/configuration-wire-helper';
-import {
+import type {
   IConfigurationWire,
   IObfuscatedPrecomputedConfigurationResponse,
   IPrecomputedConfigurationResponse,
@@ -49,17 +53,16 @@ import DefaultEventDispatcher, {
   DEFAULT_EVENT_DISPATCHER_BATCH_SIZE,
   newDefaultEventDispatcher,
 } from './events/default-event-dispatcher';
-import Event from './events/event';
-import EventDispatcher from './events/event-dispatcher';
-import NamedEventQueue from './events/named-event-queue';
-import NetworkStatusListener from './events/network-status-listener';
+import type Event from './events/event';
+import type EventDispatcher from './events/event-dispatcher';
+import type NamedEventQueue from './events/named-event-queue';
+import type NetworkStatusListener from './events/network-status-listener';
 import HttpClient from './http-client';
-import {
+import { VariationType, FormatEnum } from './interfaces';
+import type {
   PrecomputedFlag,
   Flag,
   ObfuscatedFlag,
-  VariationType,
-  FormatEnum,
   BanditParameters,
   BanditVariation,
   IObfuscatedPrecomputedBandit,
@@ -67,7 +70,7 @@ import {
   Environment,
 } from './interfaces';
 import { buildStorageKeySuffix } from './obfuscation';
-import {
+import type {
   AttributeType,
   Attributes,
   BanditActions,
@@ -77,19 +80,12 @@ import {
 } from './types';
 import * as validation from './validation';
 
+// Value exports
 export {
   loggerPrefix,
   applicationLogger,
   AbstractAssignmentCache,
-  IAssignmentDetails,
-  IAssignmentHooks,
-  IAssignmentLogger,
   EppoAssignmentLogger,
-  IAssignmentEvent,
-  IBanditLogger,
-  IBanditEvent,
-  IContainerExperiment,
-  EppoClientParameters,
   EppoClient,
   constants,
   ApiEndpoints,
@@ -99,35 +95,71 @@ export {
 
   // Precomputed Client
   EppoPrecomputedClient,
-  PrecomputedFlagsRequestParameters,
-  IObfuscatedPrecomputedConfigurationResponse,
-  IObfuscatedPrecomputedBandit,
 
   // Configuration store
-  IConfigurationStore,
-  IAsyncStore,
-  ISyncStore,
   MemoryStore,
   HybridConfigurationStore,
   MemoryOnlyConfigurationStore,
 
   // Assignment cache
-  AssignmentCacheKey,
-  AssignmentCacheValue,
-  AssignmentCacheEntry,
-  AssignmentCache,
-  AsyncMap,
   NonExpiringInMemoryAssignmentCache,
   LRUInMemoryAssignmentCache,
   assignmentCacheKeyToString,
   assignmentCacheValueToString,
 
-  // Interfaces
+  // Enums
+  VariationType,
+  FormatEnum,
+
+  // event dispatcher
+  BoundedEventQueue,
+  DEFAULT_EVENT_DISPATCHER_CONFIG,
+  DEFAULT_EVENT_DISPATCHER_BATCH_SIZE,
+  newDefaultEventDispatcher,
+  BatchEventProcessor,
+  DefaultEventDispatcher,
+
+  // Configuration interchange.
+  ConfigurationWireHelper,
+
+  // Test helpers
+  decodePrecomputedFlag,
+
+  // Utilities
+  buildStorageKeySuffix,
+};
+
+// Type exports
+export type {
+  IAssignmentDetails,
+  IAssignmentHooks,
+  IAssignmentLogger,
+  IAssignmentEvent,
+  IBanditLogger,
+  IBanditEvent,
+  IContainerExperiment,
+  EppoClientParameters,
+  PrecomputedFlagsRequestParameters,
+  IObfuscatedPrecomputedConfigurationResponse,
+  IObfuscatedPrecomputedBandit,
+
+  // Configuration store types
+  IConfigurationStore,
+  IAsyncStore,
+  ISyncStore,
+
+  // Assignment cache types
+  AssignmentCacheKey,
+  AssignmentCacheValue,
+  AssignmentCacheEntry,
+  AssignmentCache,
+  AsyncMap,
+
+  // Interface types
   FlagConfigurationRequestParameters,
   Flag,
   ObfuscatedFlag,
   Variation,
-  VariationType,
   AttributeType,
   Attributes,
   ContextAttributes,
@@ -137,30 +169,16 @@ export {
   BanditParameters,
   Subject,
   Environment,
-  FormatEnum,
 
   // event dispatcher types
   NamedEventQueue,
   EventDispatcher,
-  BoundedEventQueue,
-  DEFAULT_EVENT_DISPATCHER_CONFIG,
-  DEFAULT_EVENT_DISPATCHER_BATCH_SIZE,
-  newDefaultEventDispatcher,
-  BatchEventProcessor,
   NetworkStatusListener,
-  DefaultEventDispatcher,
   Event,
 
-  // Configuration interchange.
+  // Configuration interchange types
   IConfigurationWire,
   IPrecomputedConfigurationResponse,
   PrecomputedFlag,
   FlagKey,
-  ConfigurationWireHelper,
-
-  // Test helpers
-  decodePrecomputedFlag,
-
-  // Utilities
-  buildStorageKeySuffix,
 };

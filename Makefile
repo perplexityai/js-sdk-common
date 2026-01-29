@@ -44,4 +44,4 @@ test-data:
 .PHONY: prepare
 prepare: test-data
 	 rm -rf dist/
-	 pnpm tsc
+	 pnpm build
