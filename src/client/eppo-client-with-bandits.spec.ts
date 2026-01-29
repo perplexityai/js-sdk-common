@@ -1,5 +1,3 @@
-import * as base64 from 'js-base64';
-
 import {
   readMockUFCResponse,
   MOCK_BANDIT_MODELS_RESPONSE_FILE,
@@ -660,7 +658,7 @@ describe('EppoClient Bandits E2E test', () => {
       subjectAttributes: ContextAttributes,
       banditActions: Record<string, BanditActions>,
     ): IPrecomputedConfiguration {
-      const salt = base64.fromUint8Array(new Uint8Array([101, 112, 112, 111]));
+      const salt = btoa(String.fromCharCode(...new Uint8Array([101, 112, 112, 111])));
       const precomputedResults = client.getPrecomputedConfiguration(
         subjectKey,
         subjectAttributes,

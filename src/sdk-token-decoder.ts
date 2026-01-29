@@ -1,4 +1,4 @@
-import { Base64 } from 'js-base64';
+import { decodeBase64 } from './obfuscation';
 
 /**
  * Decodes SDK tokens with embedded encoded data.
@@ -10,9 +10,7 @@ export default class SdkTokenDecoder {
     try {
       const [, payload] = sdkKey.split('.');
       const encodedPayload = payload ?? null;
-      this.decodedParams = encodedPayload
-        ? new URLSearchParams(Base64.decode(encodedPayload))
-        : null;
+      this.decodedParams = encodedPayload ? new URLSearchParams(decodeBase64(encodedPayload)) : null;
     } catch {
       this.decodedParams = null;
     }

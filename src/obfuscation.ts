@@ -1,4 +1,3 @@
-import base64 = require('js-base64');
 import * as SparkMD5 from 'spark-md5';
 
 import { IObfuscatedPrecomputedBandit, IPrecomputedBandit, PrecomputedFlag } from './interfaces';
@@ -20,18 +19,21 @@ export function buildStorageKeySuffix(apiKey: string): string {
   return hashed.slice(0, 16);
 }
 
-export function encodeBase64(input: string) {
-  return base64.encode(input);
+export function encodeBase64(input: string): string {
+  // eslint-disable-next-line no-restricted-globals
+  return btoa(String.fromCharCode(...new TextEncoder().encode(input)));
 }
-export function attributeEncodeBase64(input: AttributeType) {
+
+export function attributeEncodeBase64(input: AttributeType): string {
   if (typeof input !== 'string') {
     return encodeBase64(String(input));
   }
   return encodeBase64(input);
 }
 
-export function decodeBase64(input: string) {
-  return base64.decode(input);
+export function decodeBase64(input: string): string {
+  // eslint-disable-next-line no-restricted-globals
+  return new TextDecoder().decode(Uint8Array.from(atob(input), (c) => c.charCodeAt(0)));
 }
 
 export function obfuscatePrecomputedBanditMap(

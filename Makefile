@@ -44,5 +44,5 @@ test-data:
 .PHONY: prepare
 prepare: test-data
 	 rm -rf dist/
-	 yarn tsc
-	 yarn webpack
+	 pnpm tsc
+	 pnpm webpack
